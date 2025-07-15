@@ -71,47 +71,6 @@ body {
     position: absolute;
 } */
 
-.chimney {
-    position: absolute;
-    top: 0;
-    left: 52.5%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.pipe {
-    background-color: black;
-    height: 8vh;
-    width: 14vh;
-}
-.hood {
-    background-color: hotpink;
-    height: 11vh;
-    width: 14vh;
-}
-
-.hood::before,
-.hood::after {
-    content: "";
-    position: absolute;
-    height: 100%;
-    width: 3px;
-    background-color: black;
-    transform-origin: top;
-}
-
-.hood::before {
-    left: 0;
-    transform: rotate(-25deg);
-}
-
-.hood::after {
-  right: 0;
-  transform: rotate(25deg);
-}
-
-
 .counter {
     display: flex;
     position: absolute;
@@ -146,7 +105,6 @@ body {
 .cabinet.left .hold2 {
     margin-left: 70%;
 }
-
 
 .cook {
     display: flex;
@@ -184,7 +142,6 @@ body {
     border: 15px solid orange;
     border-radius: 4px;
 }
-
 
 .storage {
     display: flex;
