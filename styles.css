@@ -20,42 +20,103 @@ body {
     box-sizing: border-box;
 
     /* border-bottom: 1px solid black; */
-    border-right: 1px solid black;
+    /* border-right: 1px solid black;*/
     /* border-left: 1px solid black; */
-
-    overflow: hidden;
 }
 
 .fridge {
-    height: 52vh;
-    width: 29vh;
-    position: relative;
-    border-radius: 5%;
-    padding-bottom: 3px;
-    box-sizing: border-box;
+  height: 52vh;
+  width: 29vh;
+  position: relative;
+  perspective: 1111px;
 }
+
+/* hidden initially */
+.inside {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: opacity 0.6s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+.shelf.top, .shelf.bottom {
+    opacity: 0;
+    /* position: absolute; */
+}
+.fridge:hover .inside {
+  opacity: 1;
+}
+.shelf.top {
+  height: 35%;
+  border-radius: 7%;
+  background-color: rgba(255, 255, 255, 0.6);
+  box-shadow: inset 15px 12px 20px rgba(173, 216, 230, 0.3), inset -12px -15px 20px rgba(173, 216, 230, 0.3);
+}
+.shelf.bottom {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.6);
+  box-shadow: inset 15px 12px 20px rgba(173, 216, 230, 0.3), inset -12px -15px 20px rgba(173, 216, 230, 0.3);
+  border-radius: 7%;
+}
+.sh {
+  flex-basis: 33.33%;
+  box-shadow: inset 15px 12px 20px rgba(173, 216, 230, 0.1), inset -12px -15px 20px rgba(173, 216, 230, 0.2);
+}
+
+/* doors must come after inside, visually and logically  */
 .door {
-    background-color: var(--y1);
-    border: 1px solid black;
-}
-.fridge .door {
-    width: 100%;
-    display: flex;
+  position: absolute;
+  background-color: var(--y1);
+  border: 1px solid black;
+  width: 100%;
+  border-radius: 5%;
+  transform-origin: left center;
+  transition: transform 0.6s ease-out;
+  /* top most */
+  z-index: 2; 
 }
 .door.top {
-    height: 35%;
-    border-radius: 5%;
+  height: 35%;
+  top: 0;
 }
 .door.bottom {
-    flex: 1;
-    height: 65%;
-    border-radius: 5%;
+  height: 65%;
+  bottom: 0;
 }
+
+/* 1. Door open animation */
+.door.top:hover {
+  transform: rotateY(-100deg);
+  /* remove from display */
+  /* z-index: 0; */
+}
+.door.bottom:hover {
+  transform: rotateY(-100deg);
+  /* z-index: 0; */
+}
+
+/* 2. Make shelves visible on hover */
+.fridge:hover .inside {
+  opacity: 1;
+}
+.door.top:hover ~ .inside .shelf.top {
+  opacity: 1;
+}
+.door.bottom:hover ~ .inside .shelf.bottom {
+  opacity: 1;
+}
+
 .hold {
-    color: black;
-    font-weight: bolder;
-    margin-left: 26vh;
-    margin-top: 8vh;
+  margin-left: 26vh;
+  margin-top: 8vh;
+  font-weight: bold;
 }
 
 /* 2.5D left diagonal perspective */
@@ -85,6 +146,7 @@ body {
 
 .sink {
     display: flex;
+    border-radius: 4%;
 }
 .sink .cabinet {
     flex-basis: 50%;
@@ -93,18 +155,36 @@ body {
     border: 3.2px solid #e1ba3a;
     box-sizing: border-box;
     border: 0.1px solid black;
+    position: relative;
 }
 .cabinet .hold2 {
     font-weight: bold;
     text-align: center;
     margin-top: 60%;
-}
-.cabinet.right .hold2 {
-    margin-right: 70%;
-}
-.cabinet.left .hold2 {
     margin-left: 70%;
 }
+.cabinet.left {
+    z-index: 3;
+    transition: transform 0.4s ease-in;
+}
+.cabinet.right {
+    z-index: 2;
+    transition: transform 0.4s ease-in;
+    box-shadow: inset 8px 0 8px -10px black;
+}
+.cabinet.left:hover {
+    transform: translateX(80%);
+}
+.cabinet.right:hover {
+    transform: translateX(-80%);
+}
+.cabinet.inside {
+    z-index: -1;
+    background-color: rgba(173, 103, 34, 0.7);
+    box-shadow: inset 0 0 30px 2px rgba(0, 0, 0, 0.2);
+
+}
+
 
 .cook {
     display: flex;
@@ -138,9 +218,20 @@ body {
 }
 .cook .otg {
     flex: 1;
+    position: relative;
     background-color: rgb(227, 93, 44);
     border: 15px solid orange;
     border-radius: 4px;
+}
+.otg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 35%;
+    height: 70%;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 40%, transparent 100%);
+    filter: blur(22px);
 }
 
 .storage {
@@ -155,6 +246,13 @@ body {
     background-color: var(--y4);
     border: 2px solid var(--y3);
     box-sizing: border-box;
+    perspective: 1000px;
+    transition: transform 0.3s ease-out;
+}
+.storage .cabinet:hover {
+    transform-style: preserve-3d;
+    transform-origin: left;
+    transform: rotateY(-65deg);
 }
 .storage .drawer {
     display: flex;
@@ -176,4 +274,45 @@ body {
     text-align: center;
     margin: 60% 10% 50% 90%;
 }
+.drawer .d:hover {
+    transform: scaleX(1.06);
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.3);
+}
 
+.bin {
+    background-color: var(--y2);
+    margin-left: auto;
+    height: 140px;
+    width: 92px;
+    border-radius: 5%;
+    border: 1px solid black;
+}
+
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0;
+}
+
+.controls button {
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: 10px;
+  background-color: royalblue;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.controls button:hover {
+  transform: scale(1.05);
+}
+#recipe-card {
+  margin: 20px auto;
+  width: 300px;
+  padding: 10px;
+  background-color: white;
+  border: 2px solid #000;
+  border-radius: 10px;
+}
