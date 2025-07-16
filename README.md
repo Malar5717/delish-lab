@@ -14,24 +14,11 @@ A modern, responsive recipe site made with:
 
 ---
 
-## 🎯 Goals
-- [x] Revamp old recipe site using Odin Project skills
-- [x] Push to GitHub + start my streak 💪
-- [ ] Add Flexbox & media queries
-- [ ] Integrate Java backend with recipe logic
-- [ ] Host on GitHub Pages
-- [ ] Polish it into a portfolio project ✨
-
----
-
 <!-- ## 📸 Sneak Peek -->
-
----
 
 <!-- ## 🚀 Try it Live -->
 <!-- > Hosting link will go here once deployed. -->
 
----
 
 <!-- ## 📁 How to Use
 Clone the repo: -->
