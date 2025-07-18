@@ -8,6 +8,10 @@ Built foundational HTML structure using semantic containers:
 resource: MealDB
   - implemented fetch and show based on desired category.
 
+### Level 2.1: Display fetched result
+designed a dual card to format the desired result that was fetched.
+
 ### Level 3.1: Animation – Door Mechanics
 set up door opening, sliding and pulling out using pure css
   - meddled with css combinators and z index to bring door mechanisms to life.
+
