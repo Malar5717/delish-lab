@@ -1,5 +1,17 @@
 // API used: MealDB https://www.themealdb.com/api.php 
 
+const button = document.querySelector(".controls");
+const resultCard = document.querySelector(".recipe-card");
+button.addEventListener("click", () => {
+    resultCard.classList.add("active");
+})
+
+// target = currently clicked element 
+document.body.addEventListener("click", (e) => {
+    if (!resultCard.contains(e.target) && !button.contains(e.target)) {
+      resultCard.classList.remove("active");
+    }
+});
 
 document.getElementById("fridgeBtn").addEventListener("click", () => {
     // filtering endpoint for MealDB filter.php?c for categories.php 
@@ -14,7 +26,7 @@ document.getElementById("fridgeBtn").addEventListener("click", () => {
 
         // response stored in data 
         .then(data => {
-            console.log(data);
+            console.log("DA",data);
             showRecipe(data);
         })
 
@@ -62,11 +74,33 @@ function showRecipe(data) {
 
 // function to display the recipe 
 function display(data) {
-    const result = document.getElementById("recipe-card");
-    result.innerHTML = `
+    const card = document.querySelector(".recipe-card");
+    const description = card.querySelector(".description");
+    const instruction = card.querySelector(".instruction");
+
+// list of measure + ingredient 
+    let ingredientsHTML = "<ul class='ingredients'>";
+    for (let i = 1; i <= 20; i++) {
+        const ingredient = data[`strIngredient${i}`];
+        const measure = data[`strMeasure${i}`];
+        if (ingredient) {
+            ingredientsHTML += `<li>${measure} ${ingredient}</li>`;
+        }
+    }
+    ingredientsHTML += "</ul>";
+
+// Description content
+    description.innerHTML = `
         <h2>${data.strMeal}</h2>
-        <img src="${data.strMealThumb}" alt="${data.strMeal}" style="width:200px">
-        <p>${data.strInstructions}...</p>
+        <img src="${data.strMealThumb}" alt="${data.strMeal}" style="width:100%; border-radius: 10px; margin: 1vh 0;">
+        <h4>Ingredients</h4>
+        ${ingredientsHTML}
+    `;
+
+// Instructions content
+    instruction.innerHTML = `
+        <h3>Instructions</h3>
+        <p>${data.strInstructions}</p>
     `;
 }
 
