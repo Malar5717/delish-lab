@@ -1,0 +1,99 @@
+:root {
+  --counter-color: #ffb84d;
+  --lid-color: #ffaa33;
+  --fridge-color: #ffe0b2;
+  --border-dark: #000;
+}
+
+/* Overall Scene */
+.kitchen-scene {
+  position: relative;
+  height: 100vh;
+  background: #fff8e1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Chimney */
+.chimney {
+  width: 80px;
+  height: 100px;
+  background: var(--border-dark);
+  margin-top: 20px;
+}
+
+/* Main Area with Fridge & Counter */
+.main-area {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  padding: 2rem;
+}
+
+/* Fridge */
+.fridge {
+  width: 80px;
+  height: 180px;
+  background: var(--fridge-color);
+  border: 4px solid var(--border-dark);
+  border-radius: 10px;
+}
+
+/* Counter (Base + Drawers) */
+.counter {
+  background: var(--counter-color);
+  border: 5px solid var(--border-dark);
+  border-radius: 20px 20px 0 0;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Counter Top */
+.counter-top {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  position: relative;
+}
+
+/* Faucet */
+.faucet {
+  width: 35px;
+  height: 60px;
+  border-radius: 40% 40% 0 0;
+  border: 6px solid var(--border-dark);
+  border-width: 6px 0 0 5px;
+  position: relative;
+}
+
+.tap {
+  width: 12px;
+  height: 10px;
+  background-color: var(--border-dark);
+  position: absolute;
+  left: -12px;
+  top: 10px;
+}
+
+/* Drawers */
+.storage {
+  padding: 10px;
+}
+
+.drawers {
+  display: flex;
+  justify-content: space-between;
+}
+
+.drawer {
+  width: 80px;
+  height: 40px;
+  background: var(--lid-color);
+  border: 3px solid var(--border-dark);
+  border-radius: 5px;
+}
