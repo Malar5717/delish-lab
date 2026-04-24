@@ -1,0 +1,788 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+:root {
+  --y1: #ffdd00;
+  --y2: #ffc300;
+  --y3: #ffaa00;
+  --y4: #ff9500;
+  --y5: #f28500;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: rgba(255, 255, 0, 0.288);
+  overflow: hidden;
+}
+
+.scene {
+  width: 1456px;
+  height: 840px;
+  transform-origin: top left;
+  position: relative;
+  overflow: visible;
+}
+
+.scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s;
+  z-index: 9999;
+}
+
+.scene.lights-off::after {
+  opacity: 1;
+}
+
+.kitchen-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.front {
+  height: 500px;
+  display: flex;
+  align-items: flex-end;
+  margin: 145px 175px 7% 175px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.chimney {
+  top: 0;
+  left: 54%;
+  transform: translateX(-50%);
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+}
+
+.pipe {
+  height: 38px;
+  /* 35 - 65 = 30. 30% of 240?  */
+  width: 62px;
+  background-color: #c64304;
+  border: 1px solid black;
+  margin: 0;
+}
+
+.hood {
+  width: 240px;
+  height: 90px;
+  background-color: #c64304;
+  box-shadow: inset 5px 0 5px -2px black;
+  clip-path: polygon(35% 0%, 65% 0%, 100% 40%, 0 40%);
+  margin: 0;
+}
+
+.fridge {
+  height: 360px;
+  width: 210px;
+  position: relative;
+  perspective: 1111px;
+}
+
+/* hidden initially */
+.inside {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.shelf.top,
+.shelf.bottom {
+  opacity: 0;
+  transition: opacity 0.7s;
+}
+
+.shelf:hover {
+  opacity: 1;
+}
+
+.shelf.top {
+  z-index: 1;
+  height: 35%;
+  border-radius: 7%;
+  background-color: rgba(255, 255, 255, 0.6);
+  box-shadow: inset 15px 12px 20px rgba(173, 216, 230, 0.3), inset -12px -15px 20px rgba(173, 216, 230, 0.3);
+}
+
+.shelf.bottom {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.6);
+  box-shadow: inset 15px 12px 20px rgba(173, 216, 230, 0.3), inset -12px -15px 20px rgba(173, 216, 230, 0.3);
+  border-radius: 7%;
+}
+
+.sh {
+  flex-basis: 33.33%;
+  box-shadow: inset 15px 12px 20px rgba(173, 216, 230, 0.1), inset -12px -15px 20px rgba(173, 216, 230, 0.2);
+}
+
+/* doors must come after inside, visually and logically  */
+.door {
+  position: absolute;
+  background-color: var(--y1);
+  border: 1px solid black;
+  width: 100%;
+  border-radius: 5%;
+  transform-origin: left center;
+  transition: transform 0.6s ease-out;
+}
+
+.door.top {
+  height: 35%;
+  top: 0;
+}
+
+.door.bottom {
+  height: 65%;
+  bottom: 0;
+}
+
+/* 1. Door open animation */
+.door.top:hover {
+  transform: rotateY(-100deg);
+  /* remove from display */
+  /* z-index: 0; */
+}
+
+.door.bottom:hover {
+  transform: rotateY(-100deg);
+  /* z-index: 0; */
+}
+
+.fridge:hover .inside {
+  opacity: 1;
+}
+
+.door.top:hover~.inside .shelf.top {
+  opacity: 1;
+}
+
+.door.bottom:hover~.inside .shelf.bottom {
+  opacity: 1;
+}
+
+.hold {
+  margin-left: 182px;
+  margin-top: 57px;
+  font-weight: bold;
+}
+
+.plug-point {
+  width: 50px;
+  height: 28px;
+  background-color: rgb(241, 241, 179);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  position: absolute;
+  top: 164px;
+  left: 211px;
+}
+
+.socket-hole {
+  width: 2px;
+  height: 3px;
+  border-radius: 30%;
+  position: absolute;
+  background: #782b0a;
+}
+
+.socket-hole:nth-child(1) {
+  top: 15px;
+  left: 8px;
+}
+
+.socket-hole:nth-child(2) {
+  top: 15px;
+  right: 28px;
+}
+
+.socket-hole:nth-child(3) {
+  bottom: 19px;
+  left: 30%;
+}
+
+.plug {
+  width: 20px;
+  height: 16px;
+  clip-path: polygon(50% 0%, 90% 20%, 94% 53%, 75% 100%, 25% 100%, 5% 54%, 10% 20%);
+  background-color: rgb(178, 63, 21);
+  position: absolute;
+  right: 3px;
+  top: 5px;
+}
+
+.wire {
+  width: 40px;
+  height: 30px;
+  position: absolute;
+  top: 10px;
+  right: 9px;
+  border-radius: 50%;
+  border-bottom: 4px solid rgb(178, 63, 21);
+  border-right: 4px solid rgb(178, 63, 21);
+  border-top: 4px solid transparent; 
+  border-left: 4px solid transparent;
+}
+
+.light-switch {
+  position: absolute;
+  height: 28px;
+  width: 13px;
+  background-color: #F1F1B3;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  bottom: 308px;
+  left: 265px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.switch {
+  height: 17px;
+  width: 6px;
+  background-color: #F1F1B3;
+  box-shadow: 1px 2px rgba(0,0,0,0.2),
+  inset 0 -2px 0 rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.switch:active {
+  box-shadow: inset 0 2px 3px rgba(0,0,0,0.2);
+  transform: scale(0.97);
+}
+
+.counter {
+  display: flex;
+  position: absolute;
+  width: 840px;
+  height: 195px;
+  right: 50px;
+  overflow: visible;
+}
+
+.sink,
+.cook,
+.storage {
+  height: 100%;
+  flex: 1 1 33.33%;
+}
+
+.faucet {
+  z-index: 2;
+  /* 33% of 110=33. 50% of 33  */
+  left: 105px;
+  height: 60px;
+  width: 35px;
+  bottom: 189px;
+  position: absolute;
+  border-radius: 40% 40% 0 0;
+  border-style: solid;
+  border-width: 6px 0 0 5px;
+  border-color: #e1ba3a transparent transparent #e1ba3a;
+}
+
+.tap {
+  height: 12px;
+  width: 10px;
+  right: 35px;
+  position: absolute;
+  left: -10.5px;
+  top: 28px;
+  border-radius: 40%;
+  background-color: #e1ba3a;
+}
+
+.water {
+  width: 2px;
+  height: 45px;
+  position: absolute;
+  right: 1px;
+  top: 10px;
+  background-color: lightskyblue;
+  opacity: 0;
+}
+
+[data-flow="1"] ~ .water {
+  width: 1px;
+  opacity: 0.5;
+}
+
+[data-flow="2"] ~ .water {
+  height: 120px;
+  width: 1.5px;
+  background: rgba(150, 210, 255, 0.9);
+  opacity: 1;
+}
+
+.ring {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid var(--y2);
+  position: absolute;
+  bottom: 339.5px;
+  left: 203px;
+}
+
+.cloth {
+  /* width: 40px; */
+  width: 35px;
+  /* height: 60px; */
+  height: 56px;
+  bottom: 290.5px;
+  left: 203px;
+  position: absolute;
+  background-color: var(--y5);
+  clip-path: polygon(33% 0, 84% 0, 89% 37%, 78% 91%, 51% 93%, 22% 77%, 33% 51%, 14% 44%);
+}
+
+.sink {
+  display: flex;
+  border-radius: 4%;
+}
+
+.sink .cabinet {
+  flex-basis: 50%;
+  height: 100%;
+  background-color: var(--y2);
+  border: 3.2px solid #e1ba3a;
+  box-sizing: border-box;
+  border: 0.1px solid black;
+  position: relative;
+}
+
+.cabinet .hold2 {
+  font-weight: bold;
+  text-align: center;
+  margin-top: 60%;
+  margin-left: 70%;
+}
+
+.cabinet.left {
+  z-index: 3;
+  transition: transform 0.4s ease-in;
+}
+
+.cabinet.right {
+  z-index: 2;
+  transition: transform 0.4s ease-in;
+  box-shadow: inset 8px 0 8px -10px black;
+}
+
+.cabinet.left:hover {
+  transform: translateX(80%);
+}
+
+.cabinet.right:hover {
+  transform: translateX(-80%);
+}
+
+.cabinet.inside {
+  z-index: -1;
+  background-color: rgba(173, 103, 34, 0.7);
+  box-shadow: inset 0 0 30px 2px rgba(0, 0, 0, 0.2);
+
+}
+
+.pot {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  align-items: center;
+  bottom: 197px;
+  left: 383.6px;
+  width: 100px;
+}
+
+.pot p {
+  text-align: center;
+  font-weight: 1000;
+  color: #bb4b01;
+  top: 30px;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  margin-top: 0;
+}
+
+.base {
+  width: 65px;
+  height: 40px;
+  border-radius: 3% 3% 13% 13%;
+  background-color: #bb4b01;
+}
+
+.cook {
+  display: flex;
+  flex-flow: column nowrap;
+  /* perspective: 400px; */
+}
+
+.cook .handles {
+  height: 34px;
+  background-color: orange;
+  border-bottom: 1px solid rgb(100, 58, 10);
+}
+
+.handles {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 8px;
+  background-color: #c44743;
+}
+
+.dial {
+  background-color: #d0641d;
+  border-radius: 50%;
+}
+
+.dial.small {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.dial.small.on {
+  scale: 1.1;
+}
+
+.dial.large {
+  width: 18px;
+  height: 18px;
+  margin-left: auto;
+}
+
+.otg {
+  z-index: 200;
+  flex: 1;
+  position: relative;
+  background-color: rgb(227, 93, 44);
+  border: 11px solid orange;
+  border-radius: 4px;
+  transform-origin: bottom center;
+  transition: transform 0.4s ease-in;
+}
+
+.otg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 35%;
+  height: 70%;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 40%, transparent 100%);
+  filter: blur(38px);
+}
+
+.otg.opening {
+  transform: rotateX(-65deg);
+}
+
+.otg-flat {
+  position: absolute;
+  top: 190px;
+  left: 260px;
+  width: 260px;
+  height: 10px;
+  background: #E35D2C;
+  opacity: 0;
+  transition: opacity 0.1s ease-in 0.4s;
+}
+
+.otg.open {
+  opacity: 0;
+}
+
+.otg.open ~ .otg-flat {
+  opacity: 1;
+}
+
+.otg-in {
+  width: 260px;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.otg-in::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #723404;
+  filter: blur(10px);
+  z-index: -1;
+}
+
+.otg-in::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 80%;
+  top: 0;
+  left: 0;
+  background: radial-gradient(ellipse at top, 
+    rgba(255, 80, 0, 0.9) 0%, 
+    rgba(255, 40, 0, 0.4) 40%, 
+    transparent 90%
+  );
+  filter: blur(12px);
+  z-index: 1;
+  /* opacity: 0; */
+  transition: opacity 1s ease;
+}
+
+.grill {
+  width: 100%;
+  height: 1.5px;
+  position: absolute;
+  background-color: #7b3c1a;
+  box-shadow: inset 0 0 5px rgba(170, 57, 57, 0.5);
+}
+
+.grill.one {
+  top: 40%;
+}
+
+.grill.two {
+  top: 70%;
+}
+
+.rod {
+  position: absolute;
+  bottom: 371px;
+  right: 98px;
+  width: 170px;
+  height: 5px;
+  background-color: var(--y1);
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.knife {
+  position: absolute;
+  width: 10px;
+  height: 50px;
+  background-color: var(--y4);
+  border-radius: 0 0 90% 20%;
+  top: 18px;
+}
+
+.knife::after {
+  content: "";
+  position: absolute;
+  top: -15px;
+  left: 1px;
+  width: 4px;
+  height: 20px;
+  background-color: var(--y4);
+}
+
+/* .knife.two {
+  left: 20px;
+  height: 40px;
+} */
+
+.knife.one {
+  left: 10px;
+}
+
+.spatula {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background-color: var(--y4);
+  border-radius: 40%;
+  top: 35px;
+  left: 30px;
+}
+
+.spatula::after {
+  content: "";
+  position: absolute;
+  top: -32px;
+  left: 8px;
+  width: 5px;
+  height: 45px;
+  background-color: var(--y4);
+}
+
+.seive {
+  left: 60px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--y4);
+  position: absolute;
+  background-repeat: repeat;
+}
+
+.holes {
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle, transparent 20%, var(--y4) 21%);
+  background-size: 10px 10px;
+}
+
+/* .cutting-board {
+  height: 60px;
+  width: 45px;
+  border-radius: 20%;
+  background-color: var(--y3);
+  margin-top: 20px;
+}
+
+.cutting-board::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 18.2px;
+  height: 20px;
+  width: 10px;
+  background-color: var(--y3);
+  border-radius: 5px;
+} */
+
+.cup {
+  position: absolute;
+  top: 8px;
+  width: 28px;
+  height: 26px;
+  border-radius: 6px;
+  transform: rotate(-120deg);
+  background-color: var(--y4);
+}
+
+.cup.one {
+  left: 90px;
+}
+
+.cup.two {
+  left: 130px;
+}
+
+.cup::after {
+  content: "";
+  position: absolute;
+  height: 7px;
+  width: 15px;
+  border-radius: 43%;
+  right: 20%;
+  top: 90%;
+  border: solid 3px var(--y4);
+}
+
+.storage {
+  display: flex;
+  flex-basis: 41%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px solid black;
+}
+
+.storage>.cabinet {
+  flex-basis: 38%;
+  background-color: var(--y4);
+  border: 2px solid var(--y3);
+  box-sizing: border-box;
+  perspective: 1000px;
+  transition: transform 0.3s ease-out;
+}
+
+.storage .cabinet:hover {
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  transform: rotateY(-360deg);
+}
+
+.storage .drawer {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.drawer>div {
+  flex: 1;
+  background-color: var(--y4);
+  border: 2px solid var(--y3);
+}
+
+.drawer>div:not(:last-child) {
+  border-bottom: 4px solid var(--y3);
+}
+
+.drawer .hold3 {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.cabinet .hold4 {
+  text-align: center;
+  margin: 60% 10% 50% 90%;
+}
+
+.drawer .d:hover {
+  transform: scaleX(1.06);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.3);
+}
+
+.hanger {
+  width: 10px;
+  height: 3px;
+  background-color: var(--y1);
+  border: 1px solid black;
+  position: absolute;
+  right: 39px;
+  bottom: 170px;
+}
+
+.apron {
+  clip-path: polygon(50% 0%, 54% 0, 58% 94%, 53% 74%, 48% 63%);
+  position: absolute;
+  height: 150px;
+  width: 110px;
+  left: -50px;
+  background-color: var(--y2);
+}
+
+/* @keyframes */
+.drawer i,
+.drawer img {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.drawer .d:hover i,
+.drawer .d:hover img {
+  opacity: 1;
+  /* animation: float 2s ease-in-out infinite; */
+}
+
+
