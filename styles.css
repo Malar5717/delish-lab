@@ -13,6 +13,7 @@ body {
   padding: 0;
   background-color: rgba(255, 255, 0, 0.288);
   overflow: hidden;
+  position: relative;
 }
 
 .scene {
@@ -23,9 +24,18 @@ body {
   overflow: visible;
 }
 
-.scene::after {
-  content: "";
+#ketchupCanvas {
   position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+body::after {
+  content: "";
+  position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
   pointer-events: none;
@@ -34,7 +44,7 @@ body {
   z-index: 9999;
 }
 
-.scene.lights-off::after {
+body.lights-off::after {
   opacity: 1;
 }
 
@@ -353,6 +363,7 @@ body {
   position: absolute;
   background-color: var(--y5);
   clip-path: polygon(33% 0, 84% 0, 89% 37%, 78% 91%, 51% 93%, 22% 77%, 33% 51%, 14% 44%);
+  z-index: 150;
 }
 
 .sink {
@@ -368,6 +379,11 @@ body {
   box-sizing: border-box;
   border: 0.1px solid black;
   position: relative;
+}
+
+.cloth.dragging {
+  z-index: 10001;
+  cursor: grabbing;
 }
 
 .cabinet .hold2 {
@@ -408,9 +424,10 @@ body {
   flex-direction: column;
   position: absolute;
   align-items: center;
-  bottom: 197px;
-  left: 383.6px;
-  width: 100px;
+  bottom: 190px;
+  left: 395px;
+  width: 80px;
+  scale: 0.8;
 }
 
 .pot p {
@@ -424,6 +441,27 @@ body {
   margin-top: 0;
 }
 
+.pot::before,
+.pot::after {
+  content: "";
+  position: absolute;
+  top: 40px;
+  width: 17px;
+  height: 7px;
+  background-color: #bb4b01;
+  border-radius: 10px;
+}
+
+.pot::before {
+  left: -10px;
+  transform: rotate(15deg);
+}
+
+.pot::after {
+  right: -10px;
+  transform: rotate(-15deg);
+}
+
 .base {
   width: 65px;
   height: 40px;
@@ -434,7 +472,18 @@ body {
 .cook {
   display: flex;
   flex-flow: column nowrap;
-  /* perspective: 400px; */
+  position: relative;
+}
+
+.cook::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  border-radius: 30%;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.677);
 }
 
 .cook .handles {
@@ -630,44 +679,83 @@ body {
   top: -32px;
   left: 8px;
   width: 5px;
-  height: 45px;
+  height: 33px;
   background-color: var(--y4);
 }
 
 .seive {
+  position: absolute;
   left: 60px;
+  width: 22px;
   height: 30px;
   border-radius: 50%;
   background-color: var(--y4);
-  position: absolute;
   background-repeat: repeat;
+
+  background-image: radial-gradient(circle, #FFFFB6 30%, transparent 31%);
+  background-size: 3px 5px;
 }
 
-.holes {
-  width: 100%;
+.counter-top {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
   height: 100%;
-  background-image: radial-gradient(circle, transparent 20%, var(--y4) 21%);
-  background-size: 10px 10px;
 }
 
-/* .cutting-board {
+.cutting-board {
   height: 60px;
   width: 45px;
   border-radius: 20%;
   background-color: var(--y3);
-  margin-top: 20px;
+  position: absolute;
+  top: 120px;
+  left: -20px;
+
+  transform-origin: bottom center;
+  transform: perspective(280px) rotateX(25deg);
+  box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.25);
 }
 
 .cutting-board::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 18.2px;
+  top: -18px;
+  left: 16px;
   height: 20px;
   width: 10px;
   background-color: var(--y3);
   border-radius: 5px;
-} */
+}
+
+.ketchup {
+  height: 40px;
+  width: 17px;
+  border: 1px solid rgb(59, 15, 15);
+  border-radius: 50% 50% 20% 20%;
+  position: absolute;
+  top: 140px;
+  left: 30px;
+  background-color: rgb(207, 19, 19);
+  z-index: 130;
+}
+
+.ketchup::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 6px;
+  width: 4px;
+  height: 6px;
+  background-color: black;
+  border-radius: 5px;
+}
+
+.ketchup.dragging {
+  cursor: grabbing;
+  z-index: 10000;
+}
 
 .cup {
   position: absolute;
@@ -725,12 +813,19 @@ body {
   display: flex;
   flex: 1;
   flex-direction: column;
+  position: relative;
+  z-index: 2;
 }
 
 .drawer>div {
   flex: 1;
   background-color: var(--y4);
   border: 2px solid var(--y3);
+}
+
+.drawer .d {
+  position: relative;
+  overflow: visible;
 }
 
 .drawer>div:not(:last-child) {
@@ -753,14 +848,123 @@ body {
   box-shadow: 0 8px 10px rgba(0, 0, 0, 0.3);
 }
 
+.utensils {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  pointer-events: none;
+}
+
+/* handle  */
+.ut {
+  position: absolute;
+  width: 4px;
+  height: 25px;
+  background: rgb(220, 41, 53);
+  border-radius: 3px;
+}
+
+.spoon::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: -6px;
+  width: 18px;
+  height: 14px;
+  background: rgb(220, 41, 53);
+  border-radius: 50%;
+}
+
+.ladle {
+  height: 34px;
+}
+
+.ladle::after {
+  content: "";
+  position: absolute;
+  bottom: -14px;
+  left: -8px;
+  width: 22px;
+  height: 18px;
+  background: rgb(220, 41, 53);
+  border-radius: 50%;
+}
+
+.fork {
+  height: 28px;
+}
+
+.fork::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: -4px;
+  width: 10px;
+  height: 10px;
+  background:
+    linear-gradient(to right,
+      rgb(220, 41, 53) 0 2px,
+      transparent 2px 4px,
+      rgb(220, 41, 53) 4px 6px,
+      transparent 6px 8px,
+      rgb(220, 41, 53) 8px 10px
+    );
+}
+
+.chopsticks {
+  position: absolute;
+  width: 1px;
+  height: 43px;
+}
+
+/* hide the ut handle  */
+.ut.chopsticks {
+  background: transparent;
+}
+
+.chopsticks span {
+  position: absolute;
+  width: 3px;
+  height: 100%;
+  background: rgb(220, 41, 53);
+  border-radius: 2px;
+}
+
+.chopsticks span:first-child {
+  left: 6px;
+  transform: rotate(-8deg);
+}
+
+.chopsticks span:last-child {
+  left: 10px;
+  transform: rotate(8deg);
+}
+
+.ut {
+  position: absolute;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s ease;
+}
+
+.drawer .d:hover .utensils {
+  transform: translateY(-20px);
+}
+
+.drawer .d:hover .ut {
+  opacity: 1;
+}
+
+
 .hanger {
   width: 10px;
   height: 3px;
   background-color: var(--y1);
   border: 1px solid black;
   position: absolute;
-  right: 39px;
+  right: -11px;
   bottom: 170px;
+  /* z-index: 10002; */
 }
 
 .apron {
@@ -772,7 +976,6 @@ body {
   background-color: var(--y2);
 }
 
-/* @keyframes */
 .drawer i,
 .drawer img {
   opacity: 0;
@@ -782,7 +985,6 @@ body {
 .drawer .d:hover i,
 .drawer .d:hover img {
   opacity: 1;
-  /* animation: float 2s ease-in-out infinite; */
 }
 
 

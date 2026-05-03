@@ -6,24 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delish-Lab</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="animations.css">
 </head>
 
 <body>
 
     <div class="scene">
+        <canvas id="ketchupCanvas"></canvas>
         <div class="kitchen-frame">
-    
+
             <!-- CHIMNEY -->
             <div class="chimney">
                 <div class="pipe"></div>
                 <div class="hood"></div>
             </div>
-    
+
             <div class="front">
-    
+
                 <!-- FRIDGE -->
                 <div class="fridge">
-    
+
                     <!-- fridge door -->
                     <div class="door top">
                         <p class="hold">|</p>
@@ -31,7 +33,7 @@
                     <div class="door bottom">
                         <p class="hold">|</p>
                     </div>
-    
+
                     <!-- fridge inside -->
                     <div class="inside">
                         <div class="shelf top"></div>
@@ -41,9 +43,9 @@
                             <div class="sh"></div>
                         </div>
                     </div>
-    
+
                 </div>
-    
+
                 <div class="plug-point">
                     <div class="plug"></div>
                     <div class="socket">
@@ -57,10 +59,10 @@
                 <div class="light-switch">
                     <div class="switch"></div>
                 </div>
-    
+
                 <!-- COUNTER -->
                 <div class="counter">
-    
+
                     <!-- faucet -->
                     <div class="faucet">
                         <div class="tap"></div>
@@ -79,7 +81,7 @@
                         </div>
                     </div>
                     <div class="cabinet inside"></div>
-    
+
                     <!-- pot -->
                     <div class="pot">
                         <p>_</p>
@@ -107,14 +109,15 @@
                         <div class="knife one"></div>
                         <div class="spatula"></div>
                         <div class="spatula seive">
-                            <div class="holes"></div>
+                            <!-- <div class="holes"></div> -->
                         </div>
 
-                        <!-- <div class="cutting-board"></div> -->
+                        <div class="cutting-board"></div>
+                        <div class="ketchup"></div>
                         <div class="cup one"></div>
                         <div class="cup two"></div>
                     </div>
-    
+
                     <!-- STORAGE -->
                     <div class="storage">
                         <div class="cabinet">
@@ -123,37 +126,61 @@
                         <div class="drawer">
                             <div class="d">
                                 <p class="hold3">__</p>
+                                <div class="utensils utensils-a">
+                                    <div class="ut spoon one"></div>
+                                    <div class="ut spoon two"></div>
+                                    <div class="ut fork one"></div>
+                                    <div class="ut chopsticks two">
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="d">
                                 <p class="hold3">__</p>
+                                <div class="utensils utensils-b">
+                                    <div class="ut ladle one"></div>
+                                    <div class="ut chopsticks one">
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <div class="ut spoon three"></div>
+                                    <div class="ut spoon one"></div>
+                                    <div class="ut fork two"></div>
+                                </div>
                             </div>
                             <div class="d">
                                 <p class="hold3">__</p>
+                                <div class="utensils utensils-c">
+                                    <div class="ut fork one"></div>
+                                    <div class="ut ladle one"></div>
+                                    <div class="ut spoon one"></div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-    
-                </div>
 
-                <div class="hanger">
-                    <div class="apron"></div>
+                        </div>
+
+                    </div>
+
+                    <div class="hanger">
+                        <div class="apron"></div>
+                    </div>
+
                 </div>
 
             </div>
-    
         </div>
-    </div>
 
-    <script>
-      function fitScene() {
-        const scale = window.innerWidth / 1456;
-        document.querySelector('.scene').style.transform = `scale(${scale})`;
-      }
-      window.addEventListener('resize', fitScene);
-      fitScene();
-    </script>
+        <script>
+            function fitScene() {
+                const scale = window.innerWidth / 1456;
+                document.querySelector('.scene').style.transform = `scale(${scale})`;
+            }
+            window.addEventListener('resize', fitScene);
+            fitScene();
+        </script>
 
-    <script src="script.js"></script>
+        <script src="script.js"></script>
 
 </body>
 
