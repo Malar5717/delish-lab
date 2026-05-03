@@ -553,8 +553,8 @@ body.lights-off::after {
 .otg-flat {
   position: absolute;
   top: 190px;
-  left: 260px;
-  width: 260px;
+  left: 0;
+  width: 100%;
   height: 10px;
   background: #E35D2C;
   opacity: 0;
