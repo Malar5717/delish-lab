@@ -86,6 +86,7 @@
                     <div class="pot">
                         <p>_</p>
                         <p>_______</p>
+                        <canvas id="boilBubbles"></canvas>
                         <div class="base"></div>
                     </div>
                     <!-- stove -->
@@ -106,16 +107,16 @@
                     <!-- hanging -->
                     <div class="rod">
                         <!-- <div class="knife two"></div> -->
-                        <div class="knife one"></div>
-                        <div class="spatula"></div>
-                        <div class="spatula seive">
+                        <div class="rod-i knife one"></div>
+                        <div class="rod-i spatula"></div>
+                        <div class="rod-i spatula seive">
                             <!-- <div class="holes"></div> -->
                         </div>
 
                         <div class="cutting-board"></div>
                         <div class="ketchup"></div>
-                        <div class="cup one"></div>
-                        <div class="cup two"></div>
+                        <div class="rod-i cup one"></div>
+                        <div class="rod-i cup two"></div>
                     </div>
 
                     <!-- STORAGE -->
@@ -173,6 +174,7 @@
 
         <script>
             function fitScene() {
+                // viewport vs. og deign 
                 const scale = window.innerWidth / 1456;
                 document.querySelector('.scene').style.transform = `scale(${scale})`;
             }

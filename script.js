@@ -1,8 +1,132 @@
+
 const scene = document.querySelector('.scene');
-const ketchupCanvas = document.querySelector('#ketchupCanvas');
-const ketchupCtx = ketchupCanvas.getContext('2d'); // 2D context API
 const SCENE_WIDTH = 1456;
 const SCENE_HEIGHT = 840;
+
+function getSceneInfo() {
+  const rect = scene.getBoundingClientRect();
+  const scale = rect.width / SCENE_WIDTH;
+  return { rect, scale };
+}
+
+// browser viewport coordinates -> scene coordinates
+function clientToScenePos(clientX, clientY) {
+  const { rect, scale } = getSceneInfo();
+  const sx = (clientX - rect.left) / scale;
+  const sy = (clientY - rect.top) / scale;
+  return { sx, sy };
+}
+
+// Light switch
+const lightSwitch = document.querySelector('.light-switch');
+lightSwitch.addEventListener('click', () => {
+  document.body.classList.toggle('lights-go');
+});
+
+// Tap
+const tap = document.querySelector('.tap');
+let flow = 0;
+tap.addEventListener('click', () => {
+  flow = (flow + 1) % 3;
+  tap.dataset.flow = flow;
+});
+
+// Otg
+const otg = document.querySelector('.otg');
+const otgFlat = document.querySelector('.otg-flat');
+otg.addEventListener('click', () => {
+  if (!otg.classList.contains('opening')) {
+    otg.classList.add('opening');
+    otg.addEventListener('transitionend', function handleOpen() {
+      otg.classList.add('open');
+      otg.removeEventListener('transitionend', handleOpen);
+    }, { once: true });
+  }
+});
+otgFlat.addEventListener('click', () => {
+  otg.classList.remove('opening', 'open');
+});
+
+// Dials
+const dials = document.querySelectorAll('.dial.small');
+dials.forEach(dial => {
+  dial.addEventListener('click', () => {
+    dial.classList.toggle('on');
+  });
+});
+
+// Boil logic
+let isBoiling = false;
+const pot = document.querySelector('.pot');
+const dial = document.querySelector('.dial.large');
+dial.addEventListener('click', () => {
+  dial.classList.toggle('on');
+  isBoiling = !isBoiling;
+  if (pot) {
+    if (isBoiling) {
+      pot.classList.add('boiling');
+    } else {
+      pot.classList.remove('boiling');
+    }
+  }
+});
+
+const bubbleCanvas = document.querySelector('#boilBubbles');
+const bubbleCtx = bubbleCanvas.getContext('2d');
+bubbleCanvas.width = 80;
+bubbleCanvas.height = 60;
+
+let bubbles = [];
+
+function createBubble() {
+  bubbles.push({
+    x: Math.random() * 80,
+    y: 60,
+    r: Math.random() * 3 + 2,
+    speed: Math.random() * 1 + 0.5,
+    life: 1
+  });
+}
+
+function updateBubbles() {
+  if (isBoiling && Math.random() < 0.4) {
+    createBubble();
+  }
+
+  bubbles.forEach(b => {
+    b.y -= b.speed;
+    b.r += 0.03;
+    b.life -= 0.02;
+  });
+
+  bubbles = bubbles.filter(b => b.life > 0);
+}
+
+function drawBubbles() {
+  bubbleCtx.clearRect(0, 0, 80, 60);
+
+  bubbles.forEach(b => {
+    bubbleCtx.beginPath();
+    bubbleCtx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    bubbleCtx.strokeStyle = `rgba(255, 149, 0, ${b.life})`;
+    bubbleCtx.lineWidth = 1;
+    bubbleCtx.stroke();
+    bubbleCtx.fillStyle = `rgba(255, 149, 0, ${b.life})`;
+    bubbleCtx.fill();
+  });
+}
+
+function animateBubbles() {
+  requestAnimationFrame(animateBubbles);
+  updateBubbles();
+  drawBubbles();
+}
+
+animateBubbles();
+
+// ketchup streak logic
+const ketchupCanvas = document.querySelector('#ketchupCanvas');
+const ketchupCtx = ketchupCanvas.getContext('2d'); // 2D context API
 
 ketchupCanvas.width = SCENE_WIDTH;
 ketchupCanvas.height = SCENE_HEIGHT;
@@ -10,116 +134,56 @@ ketchupCtx.lineCap = 'round';
 ketchupCtx.lineJoin = 'round';
 ketchupCtx.strokeStyle = 'rgba(207, 19, 19, 0.95)';
 
-function getSceneScale() {
-  const rect = scene.getBoundingClientRect();
-  return rect.width / 1456; 
-}
+// items in the rod
+const rodItems = document.querySelectorAll('.rod-i');
 
-// browser viewport coordinates -> scene coordinates
-function clientToScenePos(clientX, clientY) {
-  const rect = scene.getBoundingClientRect();
-  const scale = getSceneScale();
-  const sx = (clientX - rect.left) / scale;
-  const sy = (clientY - rect.top) / scale;
-  return { sx, sy };
-}
-
-const lightSwitch = document.querySelector('.light-switch');
-lightSwitch.addEventListener('click', () => {
-  document.body.classList.toggle('lights-off');
-});
-
-const tap = document.querySelector('.tap');
-let flow = 0;
-tap.addEventListener('click', () => {
-    flow = (flow + 1) % 3;
-    tap.dataset.flow = flow;
-});
-
-const dials = document.querySelectorAll('.dial.small');
-dials.forEach(dial => {
-    dial.addEventListener('click', () => {
-        dial.classList.toggle('on');
-    });
-});
-
-const otg = document.querySelector('.otg');
-const otgFlat = document.querySelector('.otg-flat');
-otg.addEventListener('click', () => {
-    if (!otg.classList.contains('opening')) {
-        otg.classList.add('opening');
-        otg.addEventListener('transitionend', function handleOpen() {
-            otg.classList.add('open');
-            otg.removeEventListener('transitionend', handleOpen);
-        }, { once: true });
-    }
-});
-otgFlat.addEventListener('click', () => {
-    otg.classList.remove('opening', 'open');
-});
-
-
-const cups = document.querySelectorAll('.cup');
-
-cups.forEach(cup => {
+rodItems.forEach(item => {
   let isDragging = false;
-  let startX, startY, origX, origY;
+  let startX, startY, startLeft, startTop;
 
-  cup.addEventListener('pointerdown', e => {
+  item.addEventListener('pointerdown', e => {
     isDragging = true;
-    cup.setPointerCapture(e.pointerId);
+    item.setPointerCapture(e.pointerId);
     
-    // mouse click 
+    // Store starting positions
     startX = e.clientX;
     startY = e.clientY;
-
-    // pos of cup 
-    origX = cup.offsetLeft;
-    origY = cup.offsetTop;
+    startLeft = item.offsetLeft;
+    startTop = item.offsetTop;
     
-    cup.style.cursor = 'grabbing';
-    cup.style.zIndex = 100;
+    item.style.cursor = 'grabbing';
+    item.style.zIndex = '100';
   });
 
-  cup.addEventListener('pointermove', e => {
+  item.addEventListener('pointermove', e => {
     if (!isDragging) return;
     
-    // how much moved? 
-    const deltaX = e.clientX - startX;
-    const deltaY = e.clientY - startY;
-    
-    cup.style.position = 'absolute';
-    cup.style.left = (origX + deltaX) + 'px';
-    cup.style.top  = (origY + deltaY) + 'px';
+    item.style.position = 'absolute';
+    item.style.left = (startLeft + (e.clientX - startX)) + 'px';
+    item.style.top = (startTop + (e.clientY - startY)) + 'px';
   });
 
-  cup.addEventListener('pointerup', e => {
+  item.addEventListener('pointerup', e => {
     isDragging = false;
-    cup.releasePointerCapture(e.pointerId);
-    cup.style.cursor = 'grab';
+    item.releasePointerCapture(e.pointerId);
+    item.style.cursor = 'grab';
     
-    const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
-    
-    if (elementBelow?.closest('.storage')) {
-      // Keep it where you dropped it
-      cup.classList.add('on-storage');
-    } else {
-      // Snap back
-      cup.style.position = '';
-      cup.style.left = '';
-      cup.style.top = '';
-      cup.classList.remove('on-storage');
-    }
+    // snap back
+    item.style.position = '';
+    item.style.left = '';
+    item.style.top = '';
+    item.style.zIndex = '';
   });
 });
 
+// ketchup logic
 const ketchup = document.querySelector('.ketchup');
 let isDraggingKetchup = false;
 let ketchupPointerId = null;
 let lastKetchupPoint = null;
 
 function drawKetchupStreak(fromPoint, toPoint) {
-  // .beginPath(), to keep as clean and separate frames 
+  // .beginPath(), to keep as clean and separate frames
   // .moveTo()
   // .lineTo()
   // .stroke()
@@ -145,20 +209,19 @@ ketchup.addEventListener('pointerdown', e => {
 
   ketchup.style.cursor = 'grabbing';
 
-  // Move the bottle into scene space so it can be placed anywhere on the board.
+  // Move the bottle into scene space so it can be placed anywhere on the board
   if (ketchup.parentElement !== scene) {
     const kRect = ketchup.getBoundingClientRect();
     const sceneRect = scene.getBoundingClientRect();
-    const scale = getSceneScale();
+    const scale = getSceneInfo().scale;
     ketchup.style.left = ((kRect.left - sceneRect.left) / scale) + 'px';
     ketchup.style.top = ((kRect.top - sceneRect.top) / scale) + 'px';
     scene.appendChild(ketchup);
   }
 
   const kRect = ketchup.getBoundingClientRect();
-  // nozzle: top: -5px; left: 6px;
-  const nozzleClientX = kRect.left + 8; // 6px left + 2px (half of 4px width)
-  const nozzleClientY = kRect.top - 2;  // -5px top + 3px (half of 6px height)
+  const nozzleClientX = kRect.left + 8;
+  const nozzleClientY = kRect.top - 2;
   lastKetchupPoint = clientToScenePos(nozzleClientX, nozzleClientY);
 });
 
@@ -172,7 +235,6 @@ document.addEventListener('pointermove', e => {
   ketchup.style.left = x + 'px';
   ketchup.style.top = y + 'px';
 
-  // recompute nozzle client coords after the bottle has moved
   const kRectNow = ketchup.getBoundingClientRect();
   const nozzleClientXNow = kRectNow.left + 8;
   const nozzleClientYNow = kRectNow.top - 2;
@@ -195,7 +257,7 @@ document.addEventListener('pointerup', e => {
   }
 });
 
-
+// cloth logic - same canvas context as ketchup
 const cloth = document.querySelector('.cloth');
 let isDraggingCloth = false;
 let clothPointerId = null;
@@ -229,7 +291,7 @@ cloth.addEventListener('pointerdown', e => {
   if (cloth.parentElement !== scene) {
     const clothRect = cloth.getBoundingClientRect();
     const sceneRect = scene.getBoundingClientRect();
-    const scale = getSceneScale();
+    const scale = getSceneInfo().scale;
     cloth.style.left = ((clothRect.left - sceneRect.left) / scale) + 'px';
     cloth.style.top = ((clothRect.top - sceneRect.top) / scale) + 'px';
     scene.appendChild(cloth);
@@ -248,9 +310,10 @@ cloth.addEventListener('pointerdown', e => {
 document.addEventListener('pointermove', e => {
   if (!isDraggingCloth) return;
 
+  const { scale } = getSceneInfo();
   const pointerPoint = clientToScenePos(e.clientX, e.clientY);
-  const clothX = pointerPoint.sx - (clothOffsetX / getSceneScale());
-  const clothY = pointerPoint.sy - (clothOffsetY / getSceneScale());
+  const clothX = pointerPoint.sx - (clothOffsetX / scale);
+  const clothY = pointerPoint.sy - (clothOffsetY / scale);
 
   cloth.style.position = 'absolute';
   cloth.style.left = clothX + 'px';
@@ -275,3 +338,5 @@ document.addEventListener('pointerup', e => {
     clothPointerId = null;
   }
 });
+
+
